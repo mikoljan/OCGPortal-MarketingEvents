@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="e92034f5-1920-440c-a592-442755379428" solutionId="e92034f5-1920-440c-a592-442755379428" resetWebServer="false" sharePointProductVersion="16.0" name="OCGportal.MarketingEvents" xmlns="http://schemas.microsoft.com/VisualStudio/2008/SharePointTools/PackageModel">
+  <projectItems>
+    <projectItemReference itemId="dee3f361-50db-4c92-9164-8983dc3b3ce4" />
+  </projectItems>
+</package>
