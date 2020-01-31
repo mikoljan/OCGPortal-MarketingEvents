@@ -419,32 +419,32 @@
             function successHandler() {
                 var listItemEnumerator = collListItems.getEnumerator();
                 while (listItemEnumerator.moveNext()) {
-                    var userName;
-
                     var listitem = listItemEnumerator.get_current();
-
-                    if (listitem.get_item("User")) {
-                        var userId = listitem.get_item("User").get_lookupId();
-                        getUser(userId).then(function (spuser) {
-                            userName = [spuser.get_loginName()];
-                        });
-                    }
                     
                     var listiteminfo = '\nID:' + listitem.get_id() +
-                        '\nUser:' + userName +
+                        '\nUser:' + listitem.get_item("User").get_lookupValue() +
                         '\nAccommodation:' + listitem.get_item('Accommodation') +
                         '\nAccommodationFrom:' + listitem.get_item('AccommodationFrom') +
                         '\nAccommodationTo:' + listitem.get_item('AccommodationTo') +
                         '\nBooked:' + listitem.get_item('Booked');
 
+                    alert(listitem.get_item('AccommodationFrom').getDate() + "/" +
+                        listitem.get_item('AccommodationFrom').getMonth()+1 + "/" +
+                        listitem.get_item('AccommodationFrom').getFullYear());
+                    //alert(listitem.get_item("User").get_lookupValue());
+                            
                     var tmpParticipant = {
-                        firstName: "John",
-                        lastName: "Doe",
-                        age: 50,
-                        eyeColor: "blue"
+                        user: ko.observableArray([listitem.get_item("User").get_lookupValue()]),
+                        accommodation: ko.observable(listitem.get_item('Accommodation')),
+                        accommodationFrom: ko.observable(listitem.get_item('AccommodationFrom').getDate() + "/" +
+                                                         listitem.get_item('AccommodationFrom').getMonth()+1 + "/" +
+                                                         listitem.get_item('AccommodationFrom').getFullYear()),
+                        accommodationTo: ko.observable(listitem.get_item('AccommodationTo')),
+                        booked: ko.observable(listitem.get_item('Booked'))
                     };
-
-                    alert(listiteminfo);
+                    
+                    self.participants.push(tmpParticipant);
+                    
                 }
             }
 

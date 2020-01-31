@@ -219,34 +219,36 @@
             </div>
             <div id="participantsCollapse" class="collapse" >
                 <div class="card-body">
-                    <div class="row">
-                        <div class="form-group col-4">
-                            <label for="internalIntermediary">Internal Intermediary</label>
-                            <div id="internalIntermediary" style="width: auto; height: auto" data-bind="clientPeoplePicker: { data: internalIntermediary, options: { AllowMultipleValues: false } }"></div>
-                        </div>
-                        <div class="col-2">                  
-                            <div class="form-group">
-                                <br />
-                                <label class="checkbox-inline">
-                                Accommodation: <input type="checkbox" style="display: inline-block;" value="" data-bind="checked: delivered"></label>
-                            </div>
-                        </div>
-                        <div class="form-group col-2">
-                            <label for="contractAcceptedDate">Contract accepted date</label>
-                            <input type="text" class="form-control" id="contractAcceptedDate" data-bind="datepicker: contractAcceptedDate"/>
-                        </div>
-                        <div class="form-group col-2">
-                            <label for="invoiceDate">Invoice date</label>
-                            <input type="text" class="form-control" id="invoiceDate" data-bind="datepicker: invoiceDate"/>
-                        </div>
-                        <div class="col-2">
-                            <div class="form-group">
-                                <br />
-                                <label class="checkbox-inline">
-                                Booked: <input type="checkbox" style="display: inline-block;" value="" data-bind="checked: delivered"></label>
-                            </div>
-                        </div>
-                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="vertical-align: middle">User</th>
+                                <th style="vertical-align: middle">Accommodation</th>
+                                <th style="vertical-align: middle">From</th>
+                                <th style="vertical-align: middle">To</th>
+                                <th style="vertical-align: middle">Booked</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: participants">
+                            <tr>
+                                <td style="width: 225px; height: 45px;">
+                                    <div style="width: auto; height: auto" data-bind="clientPeoplePicker: { data: user, options: { AllowMultipleValues: false } }"></div>
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="checkbox" data-bind="checked: accommodation" style="width: 15px; height: 15px;"/>
+                                </td>
+                                <td>
+                                    <input type="text" data-bind="datepicker: accommodationFrom" style="width: 100%" />
+                                </td>
+                                <td>
+                                    <input type="text" data-bind="datepicker: accommodationTo" style="width: 100%" />
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="checkbox" data-bind="checked: booked" style="width: 15px; height: 15px;"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
