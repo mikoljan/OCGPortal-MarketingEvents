@@ -290,6 +290,8 @@
         // Load item from list
         self.loadForm = function (itemID) {
             try {
+                self.loadParticipants(itemID);
+
                 var context = SP.ClientContext.get_current();
                 var list = context.get_web().get_lists().getByTitle("MarketingEvents");
                 var item = list.getItemById(itemID);
@@ -391,6 +393,64 @@
                 console.log(err.message());
             }
 
+        }
+
+        // Loads participants
+        self.loadParticipants = function (itemID) {
+            var clientContext = SP.ClientContext.get_current();
+            var participantsList = clientContext.get_site().get_rootWeb().get_lists().getByTitle('MarketingEventsParticipants');
+            var collListItems;
+
+            var camlQuery = new SP.CamlQuery();
+            camlQuery.set_viewXml(
+                "<View><Query>" +
+                "<Where>" +
+                "<Eq><FieldRef Name='MarketingEvent' LookupId='TRUE' /><Value Type='Lookup'>" + itemID + "</Value></Eq>" +
+                "</Where>" +
+                "</Query></View>");
+            collListItems = participantsList.getItems(camlQuery);
+
+            clientContext.load(collListItems);
+            clientContext.executeQueryAsync(
+                Function.createDelegate(this, successHandler),
+                Function.createDelegate(this, errorHandler)
+            );
+
+            function successHandler() {
+                var listItemEnumerator = collListItems.getEnumerator();
+                while (listItemEnumerator.moveNext()) {
+                    var userName;
+
+                    var listitem = listItemEnumerator.get_current();
+
+                    if (listitem.get_item("User")) {
+                        var userId = listitem.get_item("User").get_lookupId();
+                        getUser(userId).then(function (spuser) {
+                            userName = [spuser.get_loginName()];
+                        });
+                    }
+                    
+                    var listiteminfo = '\nID:' + listitem.get_id() +
+                        '\nUser:' + userName +
+                        '\nAccommodation:' + listitem.get_item('Accommodation') +
+                        '\nAccommodationFrom:' + listitem.get_item('AccommodationFrom') +
+                        '\nAccommodationTo:' + listitem.get_item('AccommodationTo') +
+                        '\nBooked:' + listitem.get_item('Booked');
+
+                    var tmpParticipant = {
+                        firstName: "John",
+                        lastName: "Doe",
+                        age: 50,
+                        eyeColor: "blue"
+                    };
+
+                    alert(listiteminfo);
+                }
+            }
+
+            function errorHandler() {
+                alert("Request failed: " + arguments[1].get_message()) ;
+            }
         }
 
         // Closes form and returns to list
