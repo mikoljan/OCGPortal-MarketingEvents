@@ -41,7 +41,7 @@ define(['knockout', 'moment'], function (ko, moment) {
         update: function (element, valueAccessor) {
             var value = ko.utils.unwrapObservable(valueAccessor()),
                 current = $(element).datepicker("getDate");
-
+            
             if (value - current !== 0) {
                 $(element).datepicker("setDate", value);
             }

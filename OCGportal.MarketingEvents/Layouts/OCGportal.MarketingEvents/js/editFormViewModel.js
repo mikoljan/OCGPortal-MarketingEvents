@@ -1,4 +1,4 @@
-﻿require(["jquery", "knockout", "moment","bootstrap", "spscripts!", "helpers", "validator", "camljs", "jqueryui", "kobindings", "datetimepicker"], function ($, ko, moment) {
+﻿require(["jquery", "knockout", "moment", "bootstrap", "spscripts!", "helpers", "validator", "camljs", "jqueryui", "kobindings", "datetimepicker", "entities/participant"], function ($, ko, moment) {
 
     editFormViewModel = function () {
         var self = this;
@@ -52,7 +52,7 @@
         self.note = ko.observable();
 
         self.contractPrice = ko.observable();
-        
+
 
         // Date fields
         self.startDate = ko.observable();
@@ -93,7 +93,7 @@
 
         self.currency = ko.observable();
         self.availableCurrency = ko.observableArray();
-        
+
         // LookUp fields
 
         // CheckBox fields
@@ -136,6 +136,14 @@
         // Calculated fields 
 
         // Participants
+        /*function participant() {
+            this.user = ko.observableArray(),
+            this.accommodation = ko.observable(),
+            this.accommodationFrom = ko.observable(),
+            this.accommodationTo = ko.observable(),
+            this.booked = ko.observable(),
+            this.row = ko.observable()   
+        };*/
         self.participants = ko.observableArray();
 
         // other helpers
@@ -176,7 +184,7 @@
                 }
             });
         }
-        
+
         // Save item to list
         self.save = function () {
             //if (IsFormValid("AddressBookForm")) {}
@@ -329,8 +337,10 @@
                         self.endDate(item.get_item('EventEnd'));
                         self.registration(item.get_item('RegistrationUntil'));
                         self.advertismentDeliveryDate(item.get_item('AdvertisingDeliveryDate'));
+                        //console.log(item.get_item('AdvertisingDeliveryDate'));
                         self.promotionDate(item.get_item('PromotionMaterialDispatchDueDate'));
                         self.draftContractDate(item.get_item('DraftContractDate'));
+                        console.log(item.get_item('DraftContractDate') instanceof Date);
                         self.contractAcceptedDate(item.get_item('ContractAcceptedDate'));
                         self.invoiceDate(item.get_item('InvoiceDate'));
                         self.contributionTime(item.get_item('ContributionTime'));
@@ -348,7 +358,7 @@
                                 self.internalIntermediary([spuser.get_loginName()]);
                             });
                         }
-                        
+
                         self.participantsCheck(item.get_item('ParticipantsCheck'));
                         if (self.participantsCheck()) $('#participantsCollapse').collapse();
 
@@ -420,7 +430,7 @@
                 var listItemEnumerator = collListItems.getEnumerator();
                 while (listItemEnumerator.moveNext()) {
                     var listitem = listItemEnumerator.get_current();
-                    
+
                     var listiteminfo = '\nID:' + listitem.get_id() +
                         '\nUser:' + listitem.get_item("User").get_lookupValue() +
                         '\nAccommodation:' + listitem.get_item('Accommodation') +
@@ -428,24 +438,36 @@
                         '\nAccommodationTo:' + listitem.get_item('AccommodationTo') +
                         '\nBooked:' + listitem.get_item('Booked');
 
-                    alert(listitem.get_item('AccommodationFrom').getDate() + "/" +
-                        listitem.get_item('AccommodationFrom').getMonth()+1 + "/" +
-                        listitem.get_item('AccommodationFrom').getFullYear());
+                    console.log(listiteminfo);
+
+                    /*alert(listitem.get_item('AccommodationFrom').getDate() + "/" +
+                         listitem.get_item('AccommodationFrom').getMonth() + 1 + "/" +
+                         listitem.get_item('AccommodationFrom').getFullYear());*/
                     //alert(listitem.get_item("User").get_lookupValue());
-                            
-                    var tmpParticipant = {
+
+                    /*var tmpParticipant = {
                         user: ko.observableArray([listitem.get_item("User").get_lookupValue()]),
                         accommodation: ko.observable(listitem.get_item('Accommodation')),
-                        accommodationFrom: ko.observable(listitem.get_item('AccommodationFrom').getDate() + "/" +
-                                                         listitem.get_item('AccommodationFrom').getMonth()+1 + "/" +
-                                                         listitem.get_item('AccommodationFrom').getFullYear()),
+                        accommodationFrom: ko.observable(new Date(listitem.get_item('AccommodationFrom'))),
                         accommodationTo: ko.observable(listitem.get_item('AccommodationTo')),
                         booked: ko.observable(listitem.get_item('Booked'))
-                    };
-                    
+                    };*/
+                    tmpParticipant = new participant();
+
+                    tmpParticipant.user([listitem.get_item("User").get_lookupValue()]);
+                    tmpParticipant.accommodation(listitem.get_item('Accommodation'));
+                    //tmpParticipant.accommodationFrom(listitem.get_item('AccommodationFrom'));
+                    tmpParticipant.accommodationFrom(new Date());
+                    tmpParticipant.accommodationTo(listitem.get_item('AccommodationTo'));
+                    tmpParticipant.booked(listitem.get_item('Booked'));
+
+                    //console.log(listitem.get_item('AccommodationFrom') instanceof Date);
+                    //tmpParticipant.accommodationFrom(listitem.get_item('AccommodationFrom'));
+
                     self.participants.push(tmpParticipant);
-                    
+
                 }
+                alert(self.participants()[0].accommodationFrom());
             }
 
             function errorHandler() {
