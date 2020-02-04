@@ -20,11 +20,11 @@ define(['knockout', 'moment'], function (ko, moment) {
             //var options = allBindingsAccessor().datepickerOptions || {};
             //$(element).datepicker(options);
             
-            $(document).ready(function () {
+            //$(document).ready(function () {
                 $(element).datepicker({
                     dateFormat: 'dd/mm/yy'
                 });
-            });
+            //});
             
             //handle the field changing
             ko.utils.registerEventHandler(element, "change", function () {
