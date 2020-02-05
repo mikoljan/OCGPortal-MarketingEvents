@@ -219,7 +219,7 @@
             </div>
             <div id="participantsCollapse" class="collapse" >
                 <div class="card-body">
-                    <table class="table table-striped">
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th style="vertical-align: middle">User</th>
@@ -230,7 +230,7 @@
                             </tr>
                         </thead>
                         <tbody data-bind="foreach: participants">
-                            <tr>
+                            <tr data-bind="hidden: deleted">
                                 <td style="width: 225px; height: 45px;">
                                     <div style="width: auto; height: auto" data-bind="clientPeoplePicker: { data: user, options: { AllowMultipleValues: false } }"></div>
                                 </td>
@@ -247,11 +247,12 @@
                                     <input type="checkbox" data-bind="checked: booked, visible: accommodation" style="width: 15px; height: 15px;"/>
                                 </td>
                                 <td style="text-align: center;">
-                                    <button type="button" class="btn btn-sm"><i class="fa fa-trash"></i></button>
+                                    <button type="button" class="btn btn-sm" data-bind="click: deleteParticipant"><i class="fa fa-trash"></i></button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <button type="button" class="btn btn-primary btn-sm" data-bind="click: addNewParticipant"><i class="fa fa-user"></i> Add new participant</button>
                 </div>
             </div>
         </div>

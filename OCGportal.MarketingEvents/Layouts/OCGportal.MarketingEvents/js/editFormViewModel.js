@@ -149,6 +149,7 @@
         // other helpers
         self.isEditMode = ko.observable(false);
         self.isInitialized = ko.observable(false);
+        self.itemID = ko.observable();
 
         // ---------------------------------Functions---------------------------------
 
@@ -176,6 +177,7 @@
 
                 var itemID = getUrlParameter("ID");
                 if (itemID) {
+                    self.itemID(itemID);
                     self.loadForm(itemID);
                     self.isEditMode(true);
                 }
@@ -215,6 +217,16 @@
                 function () {
                     console.log("Item uploaded.");
 
+                    if (self.itemID())
+                        self.itemID(item.get_id());
+
+                    // Save new participants
+
+
+                    // Update participants
+
+                    // Delete participants
+
                     self.closeForm();
                 },
                 function (s, a) {
@@ -223,6 +235,11 @@
                 }
             );
 
+        }
+
+        // Closes form and returns to list
+        self.closeForm = function () {
+            window.location.href = getUrlParameter("Source");
         }
 
         // Set List item
@@ -446,10 +463,11 @@
 
                     tmpParticipant.rowID(counter);
                     counter++;
+                    tmpParticipant.isNew(false);
+
                     tmpParticipant.user([listitem.get_item("User").get_lookupValue()]);
                     tmpParticipant.accommodation(listitem.get_item('Accommodation'));
-                    //tmpParticipant.accommodationFrom(listitem.get_item('AccommodationFrom'));
-                    tmpParticipant.accommodationFrom(new Date());
+                    tmpParticipant.accommodationFrom(listitem.get_item('AccommodationFrom'));
                     tmpParticipant.accommodationTo(listitem.get_item('AccommodationTo'));
                     tmpParticipant.booked(listitem.get_item('Booked'));
 
@@ -462,6 +480,18 @@
             function errorHandler() {
                 alert("Request failed: " + arguments[1].get_message()) ;
             }
+        }
+
+        // Adds new participant to list
+        self.addNewParticipant = function () {
+            var lastID = self.participants()[self.participants().length - 1].rowID();
+
+            tmpParticipant = new participant();
+            tmpParticipant.isNew(true);
+            tmpParticipant.rowID(lastID + 1);
+
+            self.participants.push(tmpParticipant);
+            console.log("Participant added");
         }
 
         // Closes form and returns to list
