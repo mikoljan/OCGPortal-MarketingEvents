@@ -428,6 +428,8 @@
 
             function successHandler() {
                 var listItemEnumerator = collListItems.getEnumerator();
+                var counter = 0;
+
                 while (listItemEnumerator.moveNext()) {
                     var listitem = listItemEnumerator.get_current();
 
@@ -440,20 +442,10 @@
 
                     console.log(listiteminfo);
 
-                    /*alert(listitem.get_item('AccommodationFrom').getDate() + "/" +
-                         listitem.get_item('AccommodationFrom').getMonth() + 1 + "/" +
-                         listitem.get_item('AccommodationFrom').getFullYear());*/
-                    //alert(listitem.get_item("User").get_lookupValue());
-
-                    /*var tmpParticipant = {
-                        user: ko.observableArray([listitem.get_item("User").get_lookupValue()]),
-                        accommodation: ko.observable(listitem.get_item('Accommodation')),
-                        accommodationFrom: ko.observable(new Date(listitem.get_item('AccommodationFrom'))),
-                        accommodationTo: ko.observable(listitem.get_item('AccommodationTo')),
-                        booked: ko.observable(listitem.get_item('Booked'))
-                    };*/
                     tmpParticipant = new participant();
 
+                    tmpParticipant.rowID(counter);
+                    counter++;
                     tmpParticipant.user([listitem.get_item("User").get_lookupValue()]);
                     tmpParticipant.accommodation(listitem.get_item('Accommodation'));
                     //tmpParticipant.accommodationFrom(listitem.get_item('AccommodationFrom'));
@@ -461,13 +453,10 @@
                     tmpParticipant.accommodationTo(listitem.get_item('AccommodationTo'));
                     tmpParticipant.booked(listitem.get_item('Booked'));
 
-                    //console.log(listitem.get_item('AccommodationFrom') instanceof Date);
-                    //tmpParticipant.accommodationFrom(listitem.get_item('AccommodationFrom'));
-
                     self.participants.push(tmpParticipant);
 
                 }
-                alert(self.participants()[0].accommodationFrom());
+                //alert(self.participants()[0].accommodationFrom());
             }
 
             function errorHandler() {

@@ -238,13 +238,16 @@
                                     <input type="checkbox" data-bind="checked: accommodation" style="width: 15px; height: 15px;"/>
                                 </td>
                                 <td>
-                                    <input type="text" data-bind="datepicker: accommodationFrom" style="width: 100%" />
+                                    <input type="text" data-bind="datepicker: accommodationFrom, visible: accommodation" style="width: 100%" />
                                 </td>
                                 <td>
-                                    <input type="text" data-bind="datepicker: accommodationTo" style="width: 100%" />
+                                    <input type="text" data-bind="datepicker: accommodationTo, visible: accommodation" style="width: 100%" />
                                 </td>
                                 <td style="text-align: center;">
-                                    <input type="checkbox" data-bind="checked: booked" style="width: 15px; height: 15px;"/>
+                                    <input type="checkbox" data-bind="checked: booked, visible: accommodation" style="width: 15px; height: 15px;"/>
+                                </td>
+                                <td style="text-align: center;">
+                                    <button type="button" class="btn btn-sm"><i class="fa fa-trash"></i></button>
                                 </td>
                             </tr>
                         </tbody>
