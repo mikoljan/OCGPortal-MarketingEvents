@@ -16,8 +16,11 @@
         self.marketingGroupsMFShare = ko.observable();
         self.marketingGroupsMTShare = ko.observable();
         self.marketingGroupsTotal = ko.computed(function () {
-            return parseInt(self.marketingGroupsLSShare(), 10) + parseInt(self.marketingGroupsMFShare(), 10) + parseInt(self.marketingGroupsMTShare(), 10);
+            var total = (isNaN(parseInt(self.marketingGroupsLSShare(), 10)) ? 0 : parseInt(self.marketingGroupsLSShare(), 10)) +
+                        (isNaN(parseInt(self.marketingGroupsMFShare(), 10)) ? 0 : parseInt(self.marketingGroupsMFShare(), 10)) +
+                        (isNaN(parseInt(self.marketingGroupsMTShare(), 10)) ? 0 : parseInt(self.marketingGroupsMTShare(), 10));
 
+            return total;
         }, this);
 
         self.prodGroupLSShare = ko.observable();
@@ -26,12 +29,16 @@
         self.prodGroupRVIShare = ko.observable();
         self.prodGroupANIShare = ko.observable();
         self.prodGroupTotal = ko.computed(function () {
-            return parseInt(self.prodGroupLSShare(), 10) +
-                parseInt(self.prodGroupIEShare(), 10) +
-                parseInt(self.prodGroupNDTShare(), 10) +
-                parseInt(self.prodGroupRVIShare(), 10) +
-                parseInt(self.prodGroupANIShare(), 10);
+            
+            var set = (self.prodGroupLSShare() + self.prodGroupIEShare() + self.prodGroupNDTShare() + self.prodGroupRVIShare() + self.prodGroupANIShare())
+            
+            var total = (isNaN(parseInt(self.prodGroupLSShare(), 10)) ? 0 : parseInt(self.prodGroupLSShare(), 10)) +
+                (isNaN(parseInt(self.prodGroupIEShare(), 10)) ? 0 : parseInt(self.prodGroupIEShare(), 10)) +
+                (isNaN(parseInt(self.prodGroupNDTShare(), 10)) ? 0 : parseInt(self.prodGroupNDTShare(), 10)) +
+                (isNaN(parseInt(self.prodGroupRVIShare(), 10)) ? 0 : parseInt(self.prodGroupRVIShare(), 10)) +
+                (isNaN(parseInt(self.prodGroupANIShare(), 10)) ? 0 : parseInt(self.prodGroupANIShare(), 10));
 
+            return total;
         }, this);
 
         self.docFolder = ko.observable();
