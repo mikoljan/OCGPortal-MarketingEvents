@@ -217,17 +217,22 @@
                 function () {
                     console.log("Item uploaded.");
 
-                    if (self.itemID())
+                    if (! self.itemID())
                         self.itemID(item.get_id());
 
                     // Save new participants
-
+                    var tmpCreate = self.createParticipants(self.itemID());
 
                     // Update participants
+                    var tmpUpload = self.uploadParticipants(self.itemID());
 
                     // Delete participants
-
-                    self.closeForm();
+                    var tmpDelete = self.deleteParticipants(self.itemID());
+                    
+                    $.when(tmpCreate, tmpUpload, tmpDelete).then(function () {
+                        self.closeForm();
+                    });
+                    //self.closeForm();
                 },
                 function (s, a) {
                     console.log("Failed: " + a.get_message());
@@ -357,7 +362,6 @@
                         //console.log(item.get_item('AdvertisingDeliveryDate'));
                         self.promotionDate(item.get_item('PromotionMaterialDispatchDueDate'));
                         self.draftContractDate(item.get_item('DraftContractDate'));
-                        console.log(item.get_item('DraftContractDate') instanceof Date);
                         self.contractAcceptedDate(item.get_item('ContractAcceptedDate'));
                         self.invoiceDate(item.get_item('InvoiceDate'));
                         self.contributionTime(item.get_item('ContributionTime'));
@@ -450,14 +454,14 @@
                 while (listItemEnumerator.moveNext()) {
                     var listitem = listItemEnumerator.get_current();
 
-                    var listiteminfo = '\nID:' + listitem.get_id() +
+                    /*var listiteminfo = '\nID:' + listitem.get_id() +
                         '\nUser:' + listitem.get_item("User").get_lookupValue() +
                         '\nAccommodation:' + listitem.get_item('Accommodation') +
                         '\nAccommodationFrom:' + listitem.get_item('AccommodationFrom') +
                         '\nAccommodationTo:' + listitem.get_item('AccommodationTo') +
                         '\nBooked:' + listitem.get_item('Booked');
 
-                    console.log(listiteminfo);
+                    console.log(listiteminfo);*/
 
                     tmpParticipant = new participant();
 
@@ -465,11 +469,14 @@
                     counter++;
                     tmpParticipant.isNew(false);
 
-                    tmpParticipant.user([listitem.get_item("User").get_lookupValue()]);
+                    if (listitem.get_item("User")) {
+                        tmpParticipant.user([listitem.get_item("User").get_lookupValue()]);
+                    }
                     tmpParticipant.accommodation(listitem.get_item('Accommodation'));
                     tmpParticipant.accommodationFrom(listitem.get_item('AccommodationFrom'));
                     tmpParticipant.accommodationTo(listitem.get_item('AccommodationTo'));
                     tmpParticipant.booked(listitem.get_item('Booked'));
+                    tmpParticipant.participantID(listitem.get_id());
 
                     self.participants.push(tmpParticipant);
 
@@ -482,9 +489,118 @@
             }
         }
 
+        // Creates participants
+        self.createParticipants = function (itemID) {
+            var dfd = $.Deferred();
+
+            var context = SP.ClientContext.get_current();
+            var list = context.get_web().get_lists().getByTitle("MarketingEventsParticipants");
+            
+            self.participants().forEach(participant => {
+                // Saving newly added participants, which arent deleted
+                if (participant.deleted() == false && participant.isNew() == true) {
+                    var itemCreateInfo = new SP.ListCreationInformation();
+                    var item = list.addItem(itemCreateInfo);
+                    
+                    item.set_item("User", participant.userID());
+                    item.set_item("Accommodation", participant.accommodation());
+                    item.set_item("AccommodationFrom", participant.accommodationFrom());
+                    item.set_item("AccommodationTo", participant.accommodationTo());
+                    item.set_item("Booked", participant.booked());
+                    item.set_item("MarketingEvent", itemID);
+                    
+                    item.update();
+                    context.load(item);
+                }
+            });
+
+            context.executeQueryAsync(
+                function () {
+                    console.log("Participants uploaded.");
+                    dfd.resolve();
+                },
+                function (s, a) {
+                    console.log("Failed: " + a.get_message());
+                    //alert(a.get_message() + '\n' + a.get_stackTrace());
+                    dfd.reject();
+                }
+            );
+
+            return dfd.promise();
+        }
+
+        // Creates participants
+        self.uploadParticipants = function (itemID) {
+            var dfd = $.Deferred();
+            var context = SP.ClientContext.get_current();
+            var list = context.get_web().get_lists().getByTitle("MarketingEventsParticipants");
+
+            self.participants().forEach(participant => {
+                // Saving newly added participants, which arent deleted
+                if (participant.deleted() == false && participant.isNew() == false) {
+                    var item = list.getItemById(participant.participantID());
+
+                    item.set_item("User", participant.userID());
+                    item.set_item("Accommodation", participant.accommodation());
+                    item.set_item("AccommodationFrom", participant.accommodationFrom());
+                    item.set_item("AccommodationTo", participant.accommodationTo());
+                    item.set_item("Booked", participant.booked());
+                    item.set_item("MarketingEvent", itemID);
+
+                    item.update();
+                    context.load(item);
+                }
+            });
+
+            context.executeQueryAsync(
+                function () {
+                    console.log("Participants updated.");
+                    dfd.resolve();
+                },
+                function (s, a) {
+                    console.log("Failed: " + a.get_message());
+                    //alert(a.get_message() + '\n' + a.get_stackTrace());
+                    dfd.reject();
+                }
+            );
+            return dfd.promise();
+        }
+        
+        // Deletes participants
+        self.deleteParticipants = function (itemID) {
+            var dfd = $.Deferred();
+            var context = SP.ClientContext.get_current();
+            var list = context.get_web().get_lists().getByTitle("MarketingEventsParticipants");
+
+            self.participants().forEach(participant => {
+                // Saving newly added participants, which arent deleted
+                if (participant.deleted() == true && participant.isNew() == false) {
+                    var item = list.getItemById(participant.participantID());
+                    item.deleteObject();
+                }
+            });
+
+            context.executeQueryAsync(
+                function () {
+                    console.log("Participants deleted.");
+                    dfd.resolve();
+                },
+                function (s, a) {
+                    console.log("Failed: " + a.get_message());
+                    //alert(a.get_message() + '\n' + a.get_stackTrace());
+                    dfd.reject();
+                }
+            );
+            return dfd.promise();
+        }
+
         // Adds new participant to list
         self.addNewParticipant = function () {
-            var lastID = self.participants()[self.participants().length - 1].rowID();
+            var lastID = -1;
+
+            if (self.participants()[0]) 
+                lastID = self.participants()[self.participants().length - 1].rowID();
+
 
             tmpParticipant = new participant();
             tmpParticipant.isNew(true);
