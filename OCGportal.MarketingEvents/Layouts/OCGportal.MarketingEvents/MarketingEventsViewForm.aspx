@@ -23,6 +23,13 @@
 
 <asp:Content ID="Main" ContentPlaceHolderID="PlaceHolderMain" runat="server">
     <div id="AddressBookForm" class="container-fluid" style="display:none" data-bind="visible: isInitialized">
+        <div class="row d-flex justify-content-start" style="margin-top:20px; padding-right: 25px">
+            <div style="text-align: right; position: relative; " >
+                <button type="button" data-bind="click: closeForm" class="btn btn-secondary" >Close</button>
+            </div>
+        </div>
+        <br />
+        <br />
         <div class="row">
             <div class="form-group col-2">
                 <label for="company">Company</label>

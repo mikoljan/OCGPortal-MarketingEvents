@@ -15,6 +15,11 @@
     background-color: white !important;
 }
 
+.btn-primary:disabled {
+    color: #fff !important;
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+}
 
 /* ----------------------------LOADING---------------------------- */
 .sk-circle {

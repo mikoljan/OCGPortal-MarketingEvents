@@ -25,7 +25,20 @@
 
 
     <div id="AddressBookForm" class="container-fluid" style="display:none" data-bind="visible: isInitialized">
+        <div class="row d-flex justify-content-start" style="margin-top:20px; padding-right: 25px">
+            <div style="text-align: right; position: relative; " >
+                <button type="button" data-bind="click: save, hidden: saving" class="btn btn-success">Save</button>
+                <button class="btn-primary btn " type="button" data-bind="visible: saving" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Saving...
+                </button>
+                <button type="button" data-bind="click: closeForm, hidden: saving" class="btn btn-secondary" >Close</button>
+            </div>
+        </div>
+        <br />
+        <br />
         <div class="row">
+            
             <div class="form-group col-2">
                 <label for="company">Company</label>
                 <select id="company" class="form-control" data-bind="options: availableCompany, value: company"></select>
@@ -523,8 +536,12 @@
                     <label class="checkbox-inline" style="font-size: 25px;">
                     Send for approval: <input type="checkbox" style="display: inline-block;" value="" data-bind="checked: approval"></label>
                 </div>
-                <button type="button" data-bind="click: save" class="btn btn-success">Save</button>
-                <button type="button" data-bind="click: closeForm" class="btn btn-secondary" >Close</button>
+                <button type="button" data-bind="click: save, hidden: saving" class="btn btn-success">Save</button>
+                <button class="btn-primary btn " type="button" data-bind="visible: saving" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Saving...
+                </button>
+                <button type="button" data-bind="click: closeForm, hidden: saving" class="btn btn-secondary" >Close</button>
             </div>
         </div>
 

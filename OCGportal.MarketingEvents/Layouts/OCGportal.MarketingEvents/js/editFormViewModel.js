@@ -157,6 +157,7 @@
         self.isEditMode = ko.observable(false);
         self.isInitialized = ko.observable(false);
         self.itemID = ko.observable();
+        self.saving = ko.observable(false);
 
         // ---------------------------------Functions---------------------------------
 
@@ -198,6 +199,7 @@
         self.save = function () {
             //if (IsFormValid("AddressBookForm")) {}
             console.log("Saving");
+            self.saving(true);
             var context = SP.ClientContext.get_current();
             var list = context.get_web().get_lists().getByTitle("MarketingEvents");
 
