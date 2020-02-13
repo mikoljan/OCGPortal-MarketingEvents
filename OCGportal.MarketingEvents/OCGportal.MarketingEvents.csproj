@@ -60,10 +60,23 @@
     <Compile Include="Layouts\OCGportal.MarketingEvents\MarketingEventsEditForm.aspx.designer.cs">
       <DependentUpon>MarketingEventsEditForm.aspx.cs</DependentUpon>
     </Compile>
+    <Compile Include="Layouts\OCGportal.MarketingEvents\MarketingEventsViewForm.aspx.cs">
+      <DependentUpon>MarketingEventsViewForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Layouts\OCGportal.MarketingEvents\MarketingEventsViewForm.aspx.designer.cs">
+      <DependentUpon>MarketingEventsViewForm.aspx.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />
+    <None Include="Layouts\OCGportal.MarketingEvents\css\fonts\fontawesome-webfont.ttf" />
+    <None Include="Layouts\OCGportal.MarketingEvents\css\fonts\fontawesome-webfont.woff" />
+    <None Include="Layouts\OCGportal.MarketingEvents\css\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="Layouts\OCGportal.MarketingEvents\css\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="Layouts\OCGportal.MarketingEvents\css\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Layouts\OCGportal.MarketingEvents\css\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Layouts\OCGportal.MarketingEvents\css\libs\bootstrap-datetimepicker-build.less" />
     <None Include="Layouts\OCGportal.MarketingEvents\css\libs\bootstrap-grid.css.map" />
     <None Include="Layouts\OCGportal.MarketingEvents\css\libs\bootstrap-grid.min.css.map" />
@@ -91,6 +104,7 @@
     <Folder Include="Layouts\OCGportal.MarketingEvents\js\ViewModels\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Layouts\OCGportal.MarketingEvents\css\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Layouts\OCGportal.MarketingEvents\css\jqueryui\AUTHORS.txt" />
     <Content Include="Layouts\OCGportal.MarketingEvents\css\jqueryui\images\ui-icons_444444_256x240.png" />
     <Content Include="Layouts\OCGportal.MarketingEvents\css\jqueryui\images\ui-icons_555555_256x240.png" />
@@ -501,6 +515,7 @@
     <Content Include="Layouts\OCGportal.MarketingEvents\css\libs\font-awesome.min.css" />
     <Content Include="Layouts\OCGportal.MarketingEvents\css\MarketingEvents.css" />
     <Content Include="Layouts\OCGportal.MarketingEvents\css\validator.css" />
+    <Content Include="Layouts\OCGportal.MarketingEvents\js\entities\participant.js" />
     <Content Include="Layouts\OCGportal.MarketingEvents\js\helpers\helper.js" />
     <Content Include="Layouts\OCGportal.MarketingEvents\js\libs\bootstrap.bundle.min.js" />
     <Content Include="Layouts\OCGportal.MarketingEvents\js\libs\bootstrap.js" />
@@ -572,6 +587,7 @@
     <Content Include="Layouts\OCGportal.MarketingEvents\js\require.config.js" />
     <Content Include="Layouts\OCGportal.MarketingEvents\js\editFormViewModel.js" />
     <Content Include="Layouts\OCGportal.MarketingEvents\MarketingEventsEditForm.aspx" />
+    <Content Include="Layouts\OCGportal.MarketingEvents\MarketingEventsViewForm.aspx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

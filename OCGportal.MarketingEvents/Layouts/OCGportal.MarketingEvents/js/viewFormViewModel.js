@@ -1,6 +1,6 @@
 ﻿require(["jquery", "knockout", "moment", "bootstrap", "spscripts!", "helpers", "validator", "camljs", "jqueryui", "kobindings", "datetimepicker", "entities/participant"], function ($, ko, moment) {
 
-    editFormViewModel = function () {
+    viewFormViewModel = function () {
         var self = this;
 
         // ---------------------------------Variables---------------------------------
@@ -141,16 +141,6 @@
         }, this);
 
         // Calculated fields 
-
-        // Participants
-        /*function participant() {
-            this.user = ko.observableArray(),
-            this.accommodation = ko.observable(),
-            this.accommodationFrom = ko.observable(),
-            this.accommodationTo = ko.observable(),
-            this.booked = ko.observable(),
-            this.row = ko.observable()   
-        };*/
         self.participants = ko.observableArray();
 
         // other helpers
@@ -194,141 +184,11 @@
             });
         }
 
-        // Save item to list
-        self.save = function () {
-            //if (IsFormValid("AddressBookForm")) {}
-            console.log("Saving");
-            var context = SP.ClientContext.get_current();
-            var list = context.get_web().get_lists().getByTitle("MarketingEvents");
-
-            var itemID = getUrlParameter("ID");
-            if (itemID) {
-                var item = list.getItemById(itemID);
-            }
-            else {
-                var itemCreateInfo = new SP.ListCreationInformation();
-                var item = list.addItem(itemCreateInfo);
-            }
-
-            self.setItemPropeties(item);
-
-            console.log("Item loaded, waiting for update.");
-
-            item.update();
-            console.log("Item updated.");
-
-            context.load(item);
-            console.log("Context loaded.");
-
-            context.executeQueryAsync(
-                function () {
-                    console.log("Item uploaded.");
-
-                    if (! self.itemID())
-                        self.itemID(item.get_id());
-
-                    // Save new participants
-                    var tmpCreate = self.createParticipants(self.itemID());
-
-                    // Update participants
-                    var tmpUpload = self.uploadParticipants(self.itemID());
-
-                    // Delete participants
-                    var tmpDelete = self.deleteParticipants(self.itemID());
-                    
-                    $.when(tmpCreate, tmpUpload, tmpDelete).then(function () {
-                        self.closeForm();
-                    });
-                    //self.closeForm();
-                },
-                function (s, a) {
-                    console.log("Failed: " + a.get_message());
-                    //alert(a.get_message() + '\n' + a.get_stackTrace());
-                }
-            );
-
-        }
 
         // Closes form and returns to list
         self.closeForm = function () {
+            //$(".sp-peoplepicker-delImage").remove();
             window.location.href = getUrlParameter("Source");
-        }
-
-        // Set List item
-        self.setItemPropeties = function (item) {
-            item.set_item("Title", self.title());
-            item.set_item("Location", self.city());
-            item.set_item("LocationCountry", self.country());
-            item.set_item("Organizer", self.organizator());
-            item.set_item("Contact", self.contact());
-            item.set_item("MarketGroupLSShare", self.marketingGroupsLSShare());
-            item.set_item("MarketGroupMFShare", self.marketingGroupsMFShare());
-            item.set_item("MarketGroupMTShare", self.marketingGroupsMTShare());
-            item.set_item("ProdGroupLSShare", self.prodGroupLSShare());
-            item.set_item("ProdGroupIEShare", self.prodGroupIEShare());
-            item.set_item("ProdGroupNDTShare", self.prodGroupNDTShare());
-            item.set_item("ProdGroupRVIShare", self.prodGroupRVIShare());
-            item.set_item("ProdGroupANIShare", self.prodGroupANIShare());
-            item.set_item("DocumentFolder", self.docFolder());
-            item.set_item("ContributionName", self.contributionName());
-            item.set_item("AdvertisingTopic", self.advertismentTopic());
-            item.set_item("AdvertisementFormat", self.advertismentFormat());
-            item.set_item("Other", self.boothComment());
-            item.set_item("DemoRequired", self.boothDemo());
-            item.set_item("PromotionBags", self.bags());
-            item.set_item("PromotionPens", self.pens());
-            item.set_item("PromotionNotebooks", self.notepads());
-            item.set_item("AdditionalPromotion", self.additional());
-            item.set_item("PromotionMaterialDispatchAddress", self.disAddress());
-            item.set_item("Note", self.note());
-            item.set_item("AgreementPrice", self.contractPrice());
-            item.set_item("EventStart", self.startDate());
-            item.set_item("EventEnd", self.endDate());
-            item.set_item("RegistrationUntil", self.registration());
-            item.set_item("AdvertisingDeliveryDate", self.advertismentDeliveryDate());
-            item.set_item("PromotionMaterialDispatchDueDate", self.promotionDate());
-            item.set_item("DraftContractDate", self.draftContractDate());
-            item.set_item("ContractAcceptedDate", self.contractAcceptedDate());
-            item.set_item("InvoiceDate", self.invoiceDate());
-
-            var enddateTime = moment(self.contributionTime(), 'DD/MM/YYYY HH:mm a').format("MM/DD/YYYY HH:mm");
-            var endDateTime = new Date(new Date(enddateTime).getTime()).toISOString();
-            item.set_item("ContributionTime", endDateTime);
-
-            item.set_item("EventCompany", self.company());
-            item.set_item("EventProvider", self.eventProvider());
-            item.set_item("EventStatus", self.status());
-            item.set_item("FiscalYear0", self.fiscalYear());
-            item.set_item("BoothSpecification", self.specification());
-            item.set_item("Currency", self.currency());
-            item.set_item("Intermediary", self.internalIntermediaryID());
-
-            item.set_item("ParticipantsCheck", self.participantsCheck());
-            item.set_item("ContributionsCheck", self.contributionCheck());
-            item.set_item("AdvertisementCheck", self.advertismentCheck());
-            item.set_item("Kiosk", self.boothCheck());
-            item.set_item("PromotionCheck", self.promotionCheck());
-            item.set_item("ContractCheck", self.contractCheck());
-
-            item.set_item("AdvertisingDelivered", self.delivered());
-            item.set_item("PlacedLogoOnWeb", self.webLogo());
-            item.set_item("PlacedLogoInCollection", self.bookLogo());
-            item.set_item("PlacedBanner", self.banner());
-            item.set_item("PromotionMaterialDispatchComplet", self.dispatched());
-            item.set_item("VATIncluded", self.VATIncluded());
-            item.set_item("KioskPhoto", self.boothPhoto());
-            item.set_item("LogoCollection", self.logoCollection());
-            item.set_item("LogoOnWeb", self.logoOnWeb());
-            item.set_item("ConferenceAgenda", self.conferenceAgenda());
-            item.set_item("SendForApproval", self.approval());
-
-            var tmpArray = [];
-            if (self.marketingGroupsIB())
-                tmpArray.push("IB");
-
-            if (self.marketingGroupsLS())
-                tmpArray.push("LS");
-            item.set_item("MarketingGroup", tmpArray.toString());
         }
 
         // Load item from list
@@ -434,6 +294,12 @@
                         }
 
                         self.isInitialized(true);
+
+                        $(document).ready(function () {
+                            setTimeout(function () {
+                                $(".sp-peoplepicker-delImage").remove();
+                            }, 1000);
+                        });
                     },
                     function (s, a) {
                         console.log(a.get_message() + '\n' + a.get_stackTrace());
@@ -503,133 +369,15 @@
                     self.participants.push(tmpParticipant);
 
                 }
+
+                $(".generated_peoplepicker :input").attr("disabled", true);
+
                 //alert(self.participants()[0].accommodationFrom());
             }
 
             function errorHandler() {
                 alert("Request failed: " + arguments[1].get_message()) ;
             }
-        }
-
-        // Creates participants
-        self.createParticipants = function (itemID) {
-            var dfd = $.Deferred();
-
-            var context = SP.ClientContext.get_current();
-            var list = context.get_web().get_lists().getByTitle("MarketingEventsParticipants");
-            
-            self.participants().forEach(participant => {
-                // Saving newly added participants, which arent deleted
-                if (participant.deleted() == false && participant.isNew() == true) {
-                    var itemCreateInfo = new SP.ListCreationInformation();
-                    var item = list.addItem(itemCreateInfo);
-                    
-                    item.set_item("User", participant.userID());
-                    item.set_item("Accommodation", participant.accommodation());
-                    item.set_item("AccommodationFrom", participant.accommodationFrom());
-                    item.set_item("AccommodationTo", participant.accommodationTo());
-                    item.set_item("Booked", participant.booked());
-                    item.set_item("MarketingEvent", itemID);
-                    
-                    item.update();
-                    context.load(item);
-                }
-            });
-
-            context.executeQueryAsync(
-                function () {
-                    console.log("Participants uploaded.");
-                    dfd.resolve();
-                },
-                function (s, a) {
-                    console.log("Failed: " + a.get_message());
-                    //alert(a.get_message() + '\n' + a.get_stackTrace());
-                    dfd.reject();
-                }
-            );
-
-            return dfd.promise();
-        }
-
-        // Creates participants
-        self.uploadParticipants = function (itemID) {
-            var dfd = $.Deferred();
-            var context = SP.ClientContext.get_current();
-            var list = context.get_web().get_lists().getByTitle("MarketingEventsParticipants");
-
-            self.participants().forEach(participant => {
-                // Saving newly added participants, which arent deleted
-                if (participant.deleted() == false && participant.isNew() == false) {
-                    var item = list.getItemById(participant.participantID());
-
-                    item.set_item("User", participant.userID());
-                    item.set_item("Accommodation", participant.accommodation());
-                    item.set_item("AccommodationFrom", participant.accommodationFrom());
-                    item.set_item("AccommodationTo", participant.accommodationTo());
-                    item.set_item("Booked", participant.booked());
-                    item.set_item("MarketingEvent", itemID);
-
-                    item.update();
-                    context.load(item);
-                }
-            });
-
-            context.executeQueryAsync(
-                function () {
-                    console.log("Participants updated.");
-                    dfd.resolve();
-                },
-                function (s, a) {
-                    console.log("Failed: " + a.get_message());
-                    //alert(a.get_message() + '\n' + a.get_stackTrace());
-                    dfd.reject();
-                }
-            );
-            return dfd.promise();
-        }
-        
-        // Deletes participants
-        self.deleteParticipants = function (itemID) {
-            var dfd = $.Deferred();
-            var context = SP.ClientContext.get_current();
-            var list = context.get_web().get_lists().getByTitle("MarketingEventsParticipants");
-
-            self.participants().forEach(participant => {
-                // Saving newly added participants, which arent deleted
-                if (participant.deleted() == true && participant.isNew() == false) {
-                    var item = list.getItemById(participant.participantID());
-                    item.deleteObject();
-                }
-            });
-
-            context.executeQueryAsync(
-                function () {
-                    console.log("Participants deleted.");
-                    dfd.resolve();
-                },
-                function (s, a) {
-                    console.log("Failed: " + a.get_message());
-                    //alert(a.get_message() + '\n' + a.get_stackTrace());
-                    dfd.reject();
-                }
-            );
-            return dfd.promise();
-        }
-
-        // Adds new participant to list
-        self.addNewParticipant = function () {
-            var lastID = -1;
-
-            if (self.participants()[0]) 
-                lastID = self.participants()[self.participants().length - 1].rowID();
-
-
-            tmpParticipant = new participant();
-            tmpParticipant.isNew(true);
-            tmpParticipant.rowID(lastID + 1);
-
-            self.participants.push(tmpParticipant);
-            console.log("Participant added");
         }
 
         // Gets users userID
@@ -650,9 +398,12 @@
 
     // --------------------------INIT--------------------------
 
-    var tvm = new editFormViewModel();
+    var tvm = new viewFormViewModel();
     ko.applyBindings(tvm);
     tvm.init()
 
     $("#internalIntermediary_TopSpan").addClass("form-control");
+    $("#internalIntermediary :input").attr("disabled", true); 
+    
+    
 });

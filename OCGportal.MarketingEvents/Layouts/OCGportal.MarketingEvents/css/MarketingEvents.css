@@ -11,8 +11,10 @@
 }
 
 .custom-view-label {
-    color: #495057 !important
+    color: #495057 !important;
+    background-color: white !important;
 }
+
 
 /* ----------------------------LOADING---------------------------- */
 .sk-circle {
