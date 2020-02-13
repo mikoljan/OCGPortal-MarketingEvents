@@ -25,6 +25,7 @@
     <div id="AddressBookForm" class="container-fluid" style="display:none" data-bind="visible: isInitialized">
         <div class="row d-flex justify-content-start" style="margin-top:20px; padding-right: 25px">
             <div style="text-align: right; position: relative; " >
+                <button type="button" class="btn btn-success" data-bind="click: edit, visible: canEdit" style="display:none">Edit</button>
                 <button type="button" data-bind="click: closeForm" class="btn btn-secondary" >Close</button>
             </div>
         </div>

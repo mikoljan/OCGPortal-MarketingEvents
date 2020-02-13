@@ -515,6 +515,7 @@
     <Content Include="Layouts\OCGportal.MarketingEvents\css\libs\font-awesome.min.css" />
     <Content Include="Layouts\OCGportal.MarketingEvents\css\MarketingEvents.css" />
     <Content Include="Layouts\OCGportal.MarketingEvents\css\validator.css" />
+    <Content Include="Layouts\OCGportal.MarketingEvents\js\viewFormViewModel.js" />
     <Content Include="Layouts\OCGportal.MarketingEvents\js\entities\participant.js" />
     <Content Include="Layouts\OCGportal.MarketingEvents\js\helpers\helper.js" />
     <Content Include="Layouts\OCGportal.MarketingEvents\js\libs\bootstrap.bundle.min.js" />

@@ -147,48 +147,40 @@
         self.isEditMode = ko.observable(false);
         self.isInitialized = ko.observable(false);
         self.itemID = ko.observable();
+        self.canEdit = ko.observable(false);
+        var landingPage = '/Lists/MarketingEvents';
 
         // ---------------------------------Functions---------------------------------
 
         // Init function 
         self.init = function () {
-            var tmpCompany = getFieldChoices("MarketingEvents", "EventCompany");
-            var tmpEventProvider = getFieldChoices("MarketingEvents", "EventProvider");
-            var tmpStatus = getFieldChoices("MarketingEvents", "EventStatus");
-            var tmpFiscalYear = getFieldChoices("MarketingEvents", "FiscalYear");
-            var tmpSpecification = getFieldChoices("MarketingEvents", "BoothSpecification");
-            var tmpCurrency = getFieldChoices("MarketingEvents", "Currency");
+            self.getCurrentUserPermission();
+            // init bs validation
+            //$('#AddressBookForm').validator(self.orderValidationOptions);
 
-            $.when(tmpCompany, tmpEventProvider, tmpStatus, tmpFiscalYear, tmpSpecification, tmpCurrency).then(function (r1, r2, r3, r4, r5, r6) {
-                console.log("Selects loaded.");
-
-                self.availableCompany(r1);
-                self.availableEventProvider(r2);
-                self.availableStatus(r3);
-                self.availableFiscalYear.push.apply(self.availableFiscalYear, r4);
-                self.availableSpecification(r5);
-                self.availableCurrency(r6);
-
-                // init bs validation
-                //$('#AddressBookForm').validator(self.orderValidationOptions);
-
-                var itemID = getUrlParameter("ID");
-                if (itemID) {
-                    self.itemID(itemID);
-                    self.loadForm(itemID);
-                    self.isEditMode(true);
-                }
-                else {
-                    self.isInitialized(true);
-                }
-            });
+            var itemID = getUrlParameter("ID");
+            if (itemID) {
+                self.itemID(itemID);
+                self.loadForm(itemID);
+                self.isEditMode(true);
+            }
+            else {
+                self.isInitialized(true);
+            }
         }
 
 
         // Closes form and returns to list
         self.closeForm = function () {
-            //$(".sp-peoplepicker-delImage").remove();
-            window.location.href = getUrlParameter("Source");
+            var sourceUrl = getUrlParameter("Source");
+            var webUrl = _spPageContextInfo.siteAbsoluteUrl;
+
+            if (sourceUrl.length > 0) {
+                window.location.replace(sourceUrl);
+            }
+            else {
+                window.location.replace(webUrl + landingPage);
+            }
         }
 
         // Load item from list
@@ -391,7 +383,36 @@
                 return spuser.get_id();
             });
         }
-        
+
+        // Goto EditForm
+        self.edit = function () {
+            window.location.replace(_spPageContextInfo.siteAbsoluteUrl + '/' + _spPageContextInfo.layoutsUrl + "/OCGportal.MarketingEvents/MarketingEventsEditForm.aspx" + '?ID=' + getUrlParameter("ID"));
+        }
+
+        // Check if user can edit
+        self.getCurrentUserPermission = function () {
+            var web, clientContext, currentUser, oList, perMask;
+
+            clientContext = new SP.ClientContext.get_current();
+            web = clientContext.get_web();
+            currentUser = web.get_currentUser();
+            oList = web.get_lists().getByTitle('MarketingEvents');
+            clientContext.load(oList, 'EffectiveBasePermissions');
+            clientContext.load(currentUser);
+            clientContext.load(web);
+
+            clientContext.executeQueryAsync(function () {
+                if (oList.get_effectiveBasePermissions().has(SP.PermissionKind.editListItems)) {
+                    console.log("user has edit permission");
+                    self.canEdit(true);
+                } else {
+                    console.log("user doesn't have edit permission");
+                    self.canEdit(false);
+                }
+            }, function (sender, args) {
+                console.log('request failed ' + args.get_message() + '\n' + args.get_stackTrace());
+            });
+        }
     }
 
 

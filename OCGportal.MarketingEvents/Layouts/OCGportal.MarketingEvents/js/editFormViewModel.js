@@ -158,6 +158,7 @@
         self.isInitialized = ko.observable(false);
         self.itemID = ko.observable();
         self.saving = ko.observable(false);
+        var landingPage = '/Lists/MarketingEvents';
 
         // ---------------------------------Functions---------------------------------
 
@@ -253,7 +254,15 @@
 
         // Closes form and returns to list
         self.closeForm = function () {
-            window.location.href = getUrlParameter("Source");
+            var sourceUrl = getUrlParameter("Source");
+            var webUrl = _spPageContextInfo.siteAbsoluteUrl;
+
+            if (sourceUrl.length > 0) {
+                window.location.replace(sourceUrl);
+            }
+            else {
+                window.location.replace(webUrl + landingPage);
+            }
         }
 
         // Set List item
