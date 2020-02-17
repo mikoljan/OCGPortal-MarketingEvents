@@ -159,11 +159,26 @@
         self.itemID = ko.observable();
         self.saving = ko.observable(false);
         var landingPage = '/SitePages/Dashboard.aspx';
+        self.marketingGroupsSelected = ko.computed(function () {
+            return ( self.marketingGroupsIB() || self.marketingGroupsLS() )
+        }, this);
 
         // ---------------------------------Functions---------------------------------
 
         // Init function 
         self.init = function () {
+            $('#MarketingEventsForm').validator({
+                delay: 100,
+                custom: {
+                    mgselected: function ($el) {
+                        return !self.marketingGroupsSelected();
+                    }
+                },
+                errors: {
+                    mgselected: "Atleast one marketing group has to be selected!"
+                }
+            });
+
             var tmpCompany = getFieldChoices("MarketingEvents", "EventCompany");
             var tmpEventProvider = getFieldChoices("MarketingEvents", "EventProvider");
             var tmpStatus = getFieldChoices("MarketingEvents", "EventStatus");
@@ -198,57 +213,58 @@
 
         // Save item to list
         self.save = function () {
-            //if (IsFormValid("AddressBookForm")) {}
-            console.log("Saving");
-            self.saving(true);
-            var context = SP.ClientContext.get_current();
-            var list = context.get_web().get_lists().getByTitle("MarketingEvents");
+            if (IsFormValid("MarketingEventsForm")) {
+                console.log("Saving");
+                self.saving(true);
+                var context = SP.ClientContext.get_current();
+                var list = context.get_web().get_lists().getByTitle("MarketingEvents");
 
-            var itemID = getUrlParameter("ID");
-            if (itemID) {
-                var item = list.getItemById(itemID);
-            }
-            else {
-                var itemCreateInfo = new SP.ListCreationInformation();
-                var item = list.addItem(itemCreateInfo);
-            }
-
-            self.setItemPropeties(item);
-
-            console.log("Item loaded, waiting for update.");
-
-            item.update();
-            console.log("Item updated.");
-
-            context.load(item);
-            console.log("Context loaded.");
-
-            context.executeQueryAsync(
-                function () {
-                    console.log("Item uploaded.");
-
-                    if (! self.itemID())
-                        self.itemID(item.get_id());
-
-                    // Save new participants
-                    var tmpCreate = self.createParticipants(self.itemID());
-
-                    // Update participants
-                    var tmpUpload = self.uploadParticipants(self.itemID());
-
-                    // Delete participants
-                    var tmpDelete = self.deleteParticipants(self.itemID());
-                    
-                    $.when(tmpCreate, tmpUpload, tmpDelete).then(function () {
-                        self.closeForm();
-                    });
-                    //self.closeForm();
-                },
-                function (s, a) {
-                    console.log("Failed: " + a.get_message());
-                    //alert(a.get_message() + '\n' + a.get_stackTrace());
+                var itemID = getUrlParameter("ID");
+                if (itemID) {
+                    var item = list.getItemById(itemID);
                 }
-            );
+                else {
+                    var itemCreateInfo = new SP.ListCreationInformation();
+                    var item = list.addItem(itemCreateInfo);
+                }
+
+                self.setItemPropeties(item);
+
+                console.log("Item loaded, waiting for update.");
+
+                item.update();
+                console.log("Item updated.");
+
+                context.load(item);
+                console.log("Context loaded.");
+
+                context.executeQueryAsync(
+                    function () {
+                        console.log("Item uploaded.");
+
+                        if (!self.itemID())
+                            self.itemID(item.get_id());
+
+                        // Save new participants
+                        var tmpCreate = self.createParticipants(self.itemID());
+
+                        // Update participants
+                        var tmpUpload = self.uploadParticipants(self.itemID());
+
+                        // Delete participants
+                        var tmpDelete = self.deleteParticipants(self.itemID());
+
+                        $.when(tmpCreate, tmpUpload, tmpDelete).then(function () {
+                            self.closeForm();
+                        });
+                        //self.closeForm();
+                    },
+                    function (s, a) {
+                        console.log("Failed: " + a.get_message());
+                        //alert(a.get_message() + '\n' + a.get_stackTrace());
+                    }
+                );
+            }
 
         }
 

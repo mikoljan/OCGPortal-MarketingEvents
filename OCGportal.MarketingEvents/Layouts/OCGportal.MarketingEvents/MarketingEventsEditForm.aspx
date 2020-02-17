@@ -24,7 +24,7 @@
 <asp:Content ID="Main" ContentPlaceHolderID="PlaceHolderMain" runat="server">
 
 
-    <div id="AddressBookForm" class="container-fluid" style="display:none" data-bind="visible: isInitialized">
+    <div id="MarketingEventsForm" class="container-fluid" style="display:none" data-bind="visible: isInitialized">
         <div class="row d-flex justify-content-start" style="margin-top:20px; padding-right: 25px">
             <div style="text-align: right; position: relative; " >
                 <button type="button" data-bind="click: save, hidden: saving" class="btn btn-success">Save</button>
@@ -57,16 +57,19 @@
             <div class="col-6" style="padding-left:0px;">
                 <div class="form-group col-12">
                     <label for="title">Event Title</label>
-                    <input type="text" class="form-control" id="title" data-bind="value: title"/>
+                    <input required type="text" class="form-control" id="title" data-bind="value: title" data-error="Title is required!"/>
+                    <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group col-6">
                     <label for="startDate">Start Date</label>
-                    <input type="text" class="form-control" id="startDate" placeholder="Start Date" data-bind="datepicker: startDate"/>
+                    <input required type="text" class="form-control" id="startDate" placeholder="Start Date" data-bind="datepicker: startDate" data-error="Start date is required!"/>
+                    <div class="help-block with-errors"></div>
                 </div>
                 <div class="row" style="padding-left:15px; padding-right:15px">
                     <div class="form-group col-6">
                         <label for="endDate">End Date</label>
-                        <input type="text" class="form-control" id="endDate" placeholder="End Date" data-bind="datepicker: endDate"/>
+                        <input required type="text" class="form-control" id="endDate" placeholder="End Date" data-bind="datepicker: endDate" data-error="End date is required!"/>
+                        <div class="help-block with-errors"></div>
                     </div>
                     <div class="form-group col-6">
                         <label for="fiscalYear">Fiscal Year</label>
@@ -99,17 +102,22 @@
             <div class="col-3" style="padding-left:0px;">
                 <h6 class="text-left">Marketing Groups</h6>
                 <hr />
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="MarketingGroupsIB" data-bind="checked: marketingGroupsIB">
-                    <label class="form-check-label" for="MarketingGroupsIB">
-                        IB
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="MarketingGroupsLS" data-bind="checked: marketingGroupsLS">
-                    <label class="form-check-label" for="MarketingGroupsLS">
-                        LS
-                    </label>
+                <div class="form-group">
+                    <div class="form-check form-group">
+                        <input class="form-check-input" type="checkbox" value="" id="MarketingGroupsIB" data-bind="checked: marketingGroupsIB" data-mgselected data-mgselected-error="Atleast one marketing group has to be selected!">
+                        <label class="form-check-label" for="MarketingGroupsIB">
+                            IB
+                        </label>
+                        <br />
+                    <!--</div>
+                    <div class="form-check">-->
+                        <input class="form-check-input" type="checkbox" value="" id="MarketingGroupsLS" data-bind="checked: marketingGroupsLS" data-mgselected data-mgselected-error="Atleast one marketing group has to be selected!">
+                        <label class="form-check-label" for="MarketingGroupsLS">
+                            LS
+                        </label>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    
                 </div>
                 <br />
                 <br />
