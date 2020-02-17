@@ -76,10 +76,10 @@
 
         // Date/Time fields
         self.contributionTime = ko.observable(new Date);
-        self.contributionTimeCompute = ko.computed(function () {
+        /*self.contributionTimeCompute = ko.computed(function () {
             console.log("self.contributionTime(): " + self.contributionTime());
             console.log("ISO: " + self.contributionTime().toISOString());
-        }, this);
+        }, this);*/
 
 
         // Choice fields
@@ -158,7 +158,7 @@
         self.isInitialized = ko.observable(false);
         self.itemID = ko.observable();
         self.saving = ko.observable(false);
-        var landingPage = '/Lists/MarketingEvents';
+        var landingPage = '/SitePages/Dashboard.aspx';
 
         // ---------------------------------Functions---------------------------------
 
@@ -454,7 +454,7 @@
                 );
             }
             catch (err) {
-                console.log(err.message());
+                console.log(err.message);
             }
 
         }
@@ -462,7 +462,7 @@
         // Loads participants
         self.loadParticipants = function (itemID) {
             var clientContext = SP.ClientContext.get_current();
-            var participantsList = clientContext.get_site().get_rootWeb().get_lists().getByTitle('MarketingEventsParticipants');
+            var participantsList = clientContext.get_web().get_lists().getByTitle('MarketingEventsParticipants');
             var collListItems;
 
             var camlQuery = new SP.CamlQuery();
